@@ -508,7 +508,6 @@ void
 app_main(void)
 {
     int rc;
-
     /* Initialize NVS — it is used to store PHY calibration data */
     esp_err_t ret = nvs_flash_init();
     if (ret == ESP_ERR_NVS_NO_FREE_PAGES || ret == ESP_ERR_NVS_NEW_VERSION_FOUND) {
@@ -516,7 +515,6 @@ app_main(void)
         ret = nvs_flash_init();
     }
     ESP_ERROR_CHECK(ret);
-
     ret = nimble_port_init();
     if (ret != ESP_OK) {
         ESP_LOGE(tag, "Failed to init nimble %d ", ret);
@@ -533,21 +531,14 @@ app_main(void)
     ble_hs_cfg.sync_cb = bleprph_on_sync;
     ble_hs_cfg.gatts_register_cb = gatt_svr_register_cb;
     ble_hs_cfg.store_status_cb = ble_store_util_status_rr;
-
-
-
     rc = gatt_svr_init();
     assert(rc == 0);
-
     /* Set the default device name. */
     rc = ble_svc_gap_device_name_set("nimble-bleprph");
     assert(rc == 0);
-
     /* XXX Need to have template for store */
     ble_store_config_init();
-
     nimble_port_freertos_init(bleprph_host_task);
-
     /* Initialize command line interface to accept input from user */
     rc = scli_init();
     if (rc != ESP_OK) {

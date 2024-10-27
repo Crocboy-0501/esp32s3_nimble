@@ -1,3 +1,5 @@
 .vscode/
 tutorial/
+build/
 components/
+*.dSYM

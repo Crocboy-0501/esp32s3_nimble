@@ -46,11 +46,6 @@ static uint8_t gatt_svr_dsc_val;
 static const ble_uuid128_t gatt_svr_dsc_uuid =
     BLE_UUID128_INIT(0x01, 0x01, 0x01, 0x01, 0x12, 0x12, 0x12, 0x12,
                      0x23, 0x23, 0x23, 0x23, 0x34, 0x34, 0x34, 0x34);
-/* A custom descriptor */
-// static uint8_t gatt_svr_dsc_val_a;
-// static const ble_uuid128_t gatt_svr_dsc_uuid_a =
-//     BLE_UUID128_INIT(0x33, 0x44, 0x21, 0x31, 0x12, 0x12, 0x12, 0x12,
-//                      0x23, 0x23, 0x23, 0x53, 0x34, 0x35, 0x34, 0x44);
 
 static int
 gatt_svc_access(uint16_t conn_handle, uint16_t attr_handle,
@@ -63,7 +58,8 @@ static const struct ble_gatt_svc_def gatt_svr_svcs[] = {
         .type = BLE_GATT_SVC_TYPE_PRIMARY,
         .uuid = &gatt_svr_svc_uuid.u,
         .characteristics = (struct ble_gatt_chr_def[])
-        { {
+        { 
+            {
                 /*** This characteristic can be subscribed to by writing 0x00 and 0x01 to the CCCD ***/
                 .uuid = &gatt_svr_chr_uuid.u,
                 .access_cb = gatt_svc_access,
@@ -85,13 +81,7 @@ static const struct ble_gatt_svc_def gatt_svr_svcs[] = {
 #endif
                       .access_cb = gatt_svc_access,
                     }, {
-//                        .uuid = &gatt_svr_dsc_uuid_a.u,
-// #if CONFIG_EXAMPLE_ENCRYPTION
-//                       .att_flags = BLE_ATT_F_READ | BLE_ATT_F_READ_ENC,
-// #else
-//                       .att_flags = BLE_ATT_F_READ,
-// #endif
-//                       .access_cb = gatt_svc_access,                     /* No more descriptors in this characteristic */
+                        0,
                     }
                 },
             }, {
@@ -250,26 +240,18 @@ int
 gatt_svr_init(void)
 {
     int rc;
-
     ble_svc_gap_init();
     ble_svc_gatt_init();
     ble_svc_ans_init();
-
     rc = ble_gatts_count_cfg(gatt_svr_svcs);
     if (rc != 0) {
-        printf("*********11**********\n");
-        printf("*********%d************\n", rc);
         return rc;
     }
-
     rc = ble_gatts_add_svcs(gatt_svr_svcs);
     if (rc != 0) {
-        printf("*********22**********\n");
         return rc;
     }
-
     /* Setting a value for the read-only descriptor */
     gatt_svr_dsc_val = 0x99;
-    // gatt_svr_dsc_val_a = 0x11;
     return 0;
 }
