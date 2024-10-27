@@ -3,3 +3,6 @@ tutorial/
 build/
 components/
 *.dSYM
+components/
+sdkconfig
+dependencies.lock
